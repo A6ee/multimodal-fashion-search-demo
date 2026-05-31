@@ -1,7 +1,5 @@
 # 多模態時尚商品搜尋 Demo
 
-# Multimodal Fashion Product Search Demo
-
 ## 中文版
 
 ## 專案簡介
@@ -117,6 +115,8 @@ streamlit run app.py
 - 將 Demo 部署到雲端平台，方便線上展示
 
 ---
+
+# Multimodal Fashion Product Search Demo
 
 ## English Version
 
