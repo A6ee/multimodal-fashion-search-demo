@@ -1,0 +1,34 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter / cache
+.ipynb_checkpoints/
+.cache/
+
+# ChromaDB vector database
+chroma_db/
+
+# Raw and processed private/full data
+data/raw_products.xlsx
+data/products_clean.csv
+data/products_with_attributes.csv
+data/products_with_english_caption.csv
+
+# Full image folders
+data/images/
+images/
+
+# Outputs
+outputs/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
