@@ -12,6 +12,11 @@ __pycache__/
 # ChromaDB vector database
 chroma_db/
 
+#  Demos
+03_search_demo
+05_hybrid_search_demo
+08_multivector_search_demo
+
 # Raw and processed private/full data
 data/raw_products.xlsx
 data/products_clean.csv
