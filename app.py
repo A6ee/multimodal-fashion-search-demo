@@ -9,7 +9,7 @@ import streamlit as st
 import chromadb
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from chromadb.utils.data_loaders import ImageLoader
-
+from scripts.llm_recommender import generate_grounded_recommendation
 
 # ============================================================
 # app.py
@@ -795,6 +795,10 @@ def rank_candidates(candidates: pd.DataFrame, image_scores: dict, profile: dict)
 
         image_score = image_scores.get(product_id, {}).get("image_score", 0.0)
         title_raw_score = raw_title_score(row, profile)
+        # 如果查詢明確指定顏色，圖片相似度太低的商品先排除。
+        # 這可以避免商品標題或標籤寫白色，但圖片視覺上明顯不符合的商品排到前面。
+        if profile.get("color") and image_score < 0.5:
+            continue
 
         items.append({
             "id": product_id,
@@ -921,12 +925,12 @@ def render_result_card(item: dict):
 
 def main():
     st.set_page_config(
-        page_title="Fashion RAG Demo",
+        page_title="Fashion RAG ",
         page_icon="👗",
         layout="wide",
     )
 
-    st.title("多模態時尚商品搜尋 Demo")
+    st.title("多模態時尚商品搜尋 ")
     st.write("第一版以商品名稱與圖片相似度為主，適合展示白色高領上衣、黑色短裙、度假洋裝等資料量充足的查詢。")
 
     try:
@@ -962,8 +966,20 @@ def main():
         with st.spinner("搜尋中..."):
             results, diagnostics = search_products(df, collection, query)
 
-        st.subheader("導購建議")
-        st.info(build_recommendation_text(query, results, diagnostics))
+        st.subheader("AI 導購建議")
+
+        use_llm = st.checkbox("使用 Gemini 生成導購回答", value=True)
+
+        if use_llm:
+            with st.spinner("Gemini 正在生成導購建議..."):
+                llm_text = generate_grounded_recommendation(
+                    user_query=query,
+                    retrieved_products=results[:6],
+                    diagnostics=diagnostics,
+                )
+            st.info(llm_text)
+        else:
+            st.info(build_recommendation_text(query, results, diagnostics))
 
         if show_debug:
             with st.expander("查詢解析與候選數", expanded=False):
